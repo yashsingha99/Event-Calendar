@@ -48,7 +48,7 @@ export function AppSidebar({ ...props }) {
       {/* <SidebarHeader className="border-sidebar-border h-16 border-b"> */}
         {/* <NavUser user={data.user} /> */}
       {/* </SidebarHeader> */}
-      <SidebarContent className="flex flex-col items-center">
+      <SidebarContent className="flex mt-4 flex-col items-center">
         <Calendar02
           mode="single"
           selected={time}

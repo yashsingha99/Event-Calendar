@@ -1,0 +1,5 @@
+auth
+sidebar calender
+email mailer to notify
+theme toggle
+other activities

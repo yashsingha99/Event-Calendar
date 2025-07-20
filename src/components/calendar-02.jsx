@@ -11,9 +11,9 @@ export default function Calendar02() {
     <Calendar
       mode="single"
       defaultMonth={date}
-      numberOfMonths={2}
+      numberOfMonths={1}
       selected={date}
       onSelect={setDate}
-      className="rounded-lg border shadow-sm" />
+      className="rounded-lg border shadow-sm " />
   );
 }

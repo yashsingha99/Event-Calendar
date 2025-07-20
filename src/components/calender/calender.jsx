@@ -101,7 +101,7 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen }) {
               }}
               popup
               className="calendar bg-background text-foreground text-sm "
-              style={{ height: "100%", width: "100vw" }}
+              style={{ height: "100%"}}
             />
           </div>
           <ScrollBar orientation="horizontal" />

@@ -4,24 +4,57 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CalendarIcon, MapPin, Video } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
-export function EventTaskModal({ isOpen, onClose, selectedEvent }) {
-  console.log(selectedEvent);
-  
+export function EventTaskModal({ isOpen, onClose, event }) {
+
   const [activeTab, setActiveTab] = useState("event");
   const [formData, setFormData] = useState({
-    title: selectedEvent?.title || "",
-    description: selectedEvent?.description || "",
-    guests: selectedEvent?.guests || "",
-    location: selectedEvent?.location || "",
-    time: selectedEvent?.start || null,
+    id: "",
+    title: "",
+    description: "",
+    guests: "",
+    location: "",
+    time: null,
     type: "event",
   });
+
+  const handleClose = () => {
+    onClose();
+    setFormData({
+      id: "",
+      title: "",
+      description: "",
+      guests: "",
+      location: "",
+      time: null,
+      type: "event",
+    });
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      handleClose();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (event) {
+      setFormData({
+        title: event.title || "",
+        description: event.description || "",
+        guests: event.guests || "",
+        location: event.location || "",
+        time: event.start || null,
+        type: event.type || "event",
+      });
+    }
+  }, [event]);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -31,8 +64,9 @@ export function EventTaskModal({ isOpen, onClose, selectedEvent }) {
     const startDate = new Date(formData.time);
     const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hour later
 
-    const event = {
+    const eventData = {
       ...formData,
+      id: event?.id || uuidv4(),
       start: startDate,
       end: endDate,
       allDay: false,
@@ -41,22 +75,35 @@ export function EventTaskModal({ isOpen, onClose, selectedEvent }) {
     if (typeof window !== "undefined") {
       const existing = localStorage.getItem("events");
       const prevEvents = existing ? JSON.parse(existing) : [];
-      localStorage.setItem("events", JSON.stringify([...prevEvents, event]));
+      if (event?.id) {
+        const filterEvents = prevEvents.filter((p) => p.id !== event.id);
+        localStorage.setItem(
+          "events",
+          JSON.stringify([...filterEvents, eventData])
+        );
+      } else {
+        localStorage.setItem(
+          "events",
+          JSON.stringify([...prevEvents, eventData])
+        );
+      }
     }
 
     handleClose();
   };
 
-  const handleClose = () => {
-    onClose();
-    setFormData({
-      title: "",
-      description: "",
-      guests: "",
-      location: "",
-      time: date || null,
-      type: "event",
-    });
+  const handleDelete = (e) => {
+    e.preventDefault();
+    if (typeof window !== "undefined") {
+      const existing = localStorage.getItem("events");
+      const prevEvents = existing ? JSON.parse(existing) : [];
+      const filterEvents = prevEvents.filter((p) => p.id !== event.id);
+      localStorage.setItem(
+        "events",
+        JSON.stringify(filterEvents)
+      );
+    }
+    handleClose()
   };
 
   return (
@@ -97,7 +144,9 @@ export function EventTaskModal({ isOpen, onClose, selectedEvent }) {
                 variant="outline"
                 className="w-full justify-start text-left font-normal"
               >
-                {formData.time ? format(formData.time, "MMMM dd, yyyy") : "Pick a date"}
+                {formData.time
+                  ? format(formData.time, "MMMM dd, yyyy")
+                  : "Pick a date"}
                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -106,11 +155,11 @@ export function EventTaskModal({ isOpen, onClose, selectedEvent }) {
                 mode="single"
                 selected={formData.time}
                 onSelect={(selected) => {
-                  if (selected) 
-                  setFormData({
-                    ...formData,
-                    time: selected, // ✅ store as Date object, not formatted string
-                  });
+                  if (selected)
+                    setFormData({
+                      ...formData,
+                      time: selected, // ✅ store as Date object, not formatted string
+                    });
                 }}
                 disabled={(d) => d < new Date("1900-01-01")}
                 captionLayout="dropdown"
@@ -180,10 +229,23 @@ export function EventTaskModal({ isOpen, onClose, selectedEvent }) {
             </select>
           </>
         )}
-
-        <Button onClick={handleSave} className="w-full mt-4">
-          Save
-        </Button>
+        <div>
+          {event?.id && (
+            <Button 
+            onClick={handleDelete} 
+             variant={event?.id ? "outline" : "default"}
+            className={`w-full mt-4 ${event?.id  && "border hover:bg-gray-300 border-black bg-gray-200"}`}
+            >
+              Delete
+            </Button>
+          )}
+          <Button
+            onClick={handleSave}
+            className="w-full mt-4"
+          >
+            {event?.id ? "Save changes" : "Save"}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

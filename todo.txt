@@ -1,6 +1,5 @@
 auth
 sidebar calender
-dynamic event coor
 email mailer to notify
 theme toggle
 other activities

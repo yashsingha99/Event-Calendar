@@ -131,7 +131,7 @@ export function EventTaskModal({ isOpen, onClose, event }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className={`sm:max-w-[500px]`}>
         <DialogHeader>
           <DialogTitle>
             Add {activeTab === "event" ? "Event" : "Task"}

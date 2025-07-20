@@ -1,51 +1,50 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import {
-  Calendar,
-  dateFnsLocalizer,
-  Views,
-} from "react-big-calendar"
-import { format, parse, startOfWeek, getDay } from "date-fns"
-import { enUS } from "date-fns/locale"
-import "react-big-calendar/lib/css/react-big-calendar.css"
-import "./styles.css"
+import { useEffect, useState } from "react";
+import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { enUS } from "date-fns/locale";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "./styles.css";
 
-import { Card } from "../ui/card"
-import { ScrollArea, ScrollBar } from "../ui/scroll-area"
-import PageTitle from "../page-title"
-import { cn } from "@/lib/utils"
+import { Card } from "../ui/card";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import PageTitle from "../page-title";
+import { cn } from "@/lib/utils";
 
-import { CalendarHeader } from "./calendar-header"
-import { CalendarToolbar } from "./calendar-toolbar"
-import { EventTaskModal } from "../EventTaskModal"
+import { CalendarHeader } from "./calendar-header";
+import { CalendarToolbar } from "./calendar-toolbar";
+import { EventTaskModal } from "../EventTaskModal";
 
-const locales = { "en-US": enUS }
-const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales })
+const locales = { "en-US": enUS };
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
 
-export default function CalendarPage() {
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [view, setView] = useState(Views.MONTH)
-  const [date, setDate] = useState(new Date())
-  const [isModalOpen, setIsModalOpen] = useState(false)
+export default function CalendarPage({ isModalOpen, setIsModalOpen }) {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [view, setView] = useState(Views.MONTH);
+  const [date, setDate] = useState(new Date());
+  const [events, setEvents] = useState([]);
 
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: "React Project",
-      start: new Date(),
-      end: new Date(new Date().getTime() + 60 * 60 * 1000),
-      type: "task",
-      description: "Work on calendar modal",
-      resource: {
-        completed: false,
-        color: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      },
-    },
-  ])
+  useEffect(() => {
+    const stored = localStorage.getItem("events");
+    if (stored) {
+      const parsed = JSON.parse(stored).map((event) => ({
+        ...event,
+        start: new Date(event.start),
+        end: new Date(event.end),
+      }));
+      setEvents(parsed);
+    }
+  }, [isModalOpen]);
 
   const eventStyleGetter = (event) => {
-    const isCompleted = event.resource?.completed
+    const isCompleted = event.resource?.completed;
     return {
       className: cn(
         "rbc-event border rounded-md px-2 py-1",
@@ -53,12 +52,17 @@ export default function CalendarPage() {
           ? "bg-green-100 border-green-200 text-green-800"
           : "bg-red-100 border-red-200 text-red-800"
       ),
-    }
-  }
+    };
+  };
+
+  const handleSelectEvent = (event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  };
 
   return (
     <div>
-      <Card className="w-[calc(100svw-50px)] p-4 md:w-full">
+      <Card className="text-sm">
         <ScrollArea>
           <div className="h-[calc(100svh-150px)]">
             <Calendar
@@ -68,25 +72,22 @@ export default function CalendarPage() {
               endAccessor="end"
               view={view}
               onView={setView}
-              date={date}
+              // date={date}
               // onDoubleClickEvent={(event) => {
               //   setSelectedDate(event.start)
               //   setIsModalOpen(true)
-              // }} 
+              // }}
               onSelecting={({ start, end }) => {
-                setSelectedDate(start)
-                setIsModalOpen(true)
-                return false // Prevent default selection behavior
+                setSelectedDate(start);
+                setIsModalOpen(true);
+                return false; // Prevent default selection behavior
               }}
               onKeyPressEvent={(event) => {
-                setSelectedDate(event.start)
-                setIsModalOpen(true)
+                setSelectedDate(event.start);
+                setIsModalOpen(true);
               }}
               onNavigate={setDate}
-              onSelectEvent={(event) => {
-                setSelectedDate(event.start)
-                setIsModalOpen(true)
-              }}
+              onSelectEvent={handleSelectEvent}
               // onSelectSlot={(slotInfo) => {
               //   setSelectedDate(slotInfo.start)
               //   setIsModalOpen(true)
@@ -99,8 +100,8 @@ export default function CalendarPage() {
                 header: CalendarHeader,
               }}
               popup
-              className="calendar bg-background text-foreground"
-              style={{ height: "100%" }}
+              className="calendar bg-background text-foreground text-sm "
+              style={{ height: "100%", width: "100vw" }}
             />
           </div>
           <ScrollBar orientation="horizontal" />
@@ -110,8 +111,8 @@ export default function CalendarPage() {
       <EventTaskModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        date={selectedDate}
+        event={selectedEvent}
       />
     </div>
-  )
+  );
 }

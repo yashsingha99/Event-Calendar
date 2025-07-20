@@ -1,0 +1,62 @@
+// utils/colorOptions.ts
+export const colorOptions = [
+  { name: "Red 300", color: "#f87171" },
+  { name: "Red 500", color: "#ef4444" },
+  { name: "Red 600", color: "#dc2626" },
+  { name: "Red 700", color: "#b91c1c" },
+  { name: "Red 800", color: "#7f1d1d" },
+
+  { name: "Orange 300", color: "#fb923c" },
+  { name: "Orange 500", color: "#f97316" },
+  { name: "Orange 600", color: "#ea580c" },
+  { name: "Orange 700", color: "#c2410c" },
+  { name: "Orange 800", color: "#9a3412" },
+
+  { name: "Yellow 300", color: "#facc15" },
+  { name: "Yellow 500", color: "#eab308" },
+  { name: "Yellow 600", color: "#ca8a04" },
+  { name: "Yellow 700", color: "#a16207" },
+  { name: "Yellow 800", color: "#854d0e" },
+
+  { name: "Green 300", color: "#4ade80" },
+  { name: "Green 500", color: "#22c55e" },
+  { name: "Green 600", color: "#16a34a" },
+  { name: "Green 700", color: "#15803d" },
+  { name: "Green 800", color: "#166534" },
+
+  { name: "Teal 300", color: "#2dd4bf" },
+  { name: "Teal 500", color: "#14b8a6" },
+  { name: "Teal 600", color: "#0d9488" },
+  { name: "Teal 700", color: "#0f766e" },
+  { name: "Teal 800", color: "#115e59" },
+
+  { name: "Blue 300", color: "#38bdf8" },
+  { name: "Blue 500", color: "#0ea5e9" },
+  { name: "Blue 600", color: "#0284c7" },
+  { name: "Blue 700", color: "#0369a1" },
+  { name: "Blue 800", color: "#075985" },
+
+  { name: "Purple 300", color: "#a78bfa" },
+  { name: "Purple 500", color: "#8b5cf6" },
+  { name: "Purple 600", color: "#7c3aed" },
+  { name: "Purple 700", color: "#6d28d9" },
+  { name: "Purple 800", color: "#5b21b6" },
+
+  { name: "Pink 300", color: "#f472b6" },
+  { name: "Pink 500", color: "#ec4899" },
+  { name: "Pink 600", color: "#db2777" },
+  { name: "Pink 700", color: "#be185d" },
+  { name: "Pink 800", color: "#9d174d" },
+
+  { name: "Gray 300", color: "#94a3b8" },
+  { name: "Gray 500", color: "#64748b" },
+  { name: "Gray 600", color: "#475569" },
+  { name: "Gray 700", color: "#334155" },
+  { name: "Gray 800", color: "#1e293b" },
+
+  { name: "Neutral 300", color: "#d4d4d8" },
+  { name: "Neutral 500", color: "#a1a1aa" },
+  { name: "Neutral 600", color: "#71717a" },
+  { name: "Neutral 700", color: "#52525b" },
+  { name: "Neutral 800", color: "#3f3f46" },
+];

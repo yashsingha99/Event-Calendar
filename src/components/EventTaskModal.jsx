@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
+import { ColorPicker } from "./color-picker";
 
 export function EventTaskModal({ isOpen, onClose, event }) {
   const [activeTab, setActiveTab] = useState("event");
@@ -31,6 +32,7 @@ export function EventTaskModal({ isOpen, onClose, event }) {
     location: "",
     time: null,
     type: "event",
+    colorData:{ name: "color picker" , color:"#3174AD"},
   });
 
   const handleClose = () => {
@@ -43,10 +45,11 @@ export function EventTaskModal({ isOpen, onClose, event }) {
       location: "",
       time: null,
       type: "event",
+      colorData:{ name: "color picker", color:"#3174AD"},
     });
   };
 
-  useEffect(() => {
+  useEffect(() => { 
     if (!isOpen) {
       handleClose();
     }
@@ -61,6 +64,8 @@ export function EventTaskModal({ isOpen, onClose, event }) {
         location: event.location || "",
         time: event.start || null,
         type: event.type || "event",
+        colorData: event.color || {name: "color picker", color: "#3174AD"},
+
       });
     }
   }, [event]);
@@ -133,8 +138,9 @@ export function EventTaskModal({ isOpen, onClose, event }) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex gap-2 mb-2">
-          <Button
+        <div className="flex justify-between mb-2">
+          <div className="flex items-center gap-2 mb-2">
+             <Button
             variant={activeTab === "event" ? "default" : "outline"}
             onClick={() => setActiveTab("event")}
           >
@@ -146,6 +152,12 @@ export function EventTaskModal({ isOpen, onClose, event }) {
           >
             Task
           </Button>
+          </div>
+         
+           <ColorPicker
+            value={formData.colorData}
+            onChange={(color) => setFormData({ ...formData, colorData: color })}
+          />
         </div>
 
         <Input
@@ -274,6 +286,7 @@ export function EventTaskModal({ isOpen, onClose, event }) {
             </select>
           </>
         )}
+         
         <div>
           {event?.id && (
             <Button

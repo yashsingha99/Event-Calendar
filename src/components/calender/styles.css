@@ -9,6 +9,7 @@
 /* Font Family */
 .rbc-calendar {
     font-family: var(--font-sans, 'Inter', sans-serif);
+    
 }
 
 /* Toolbar Styling */

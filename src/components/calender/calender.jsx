@@ -43,17 +43,26 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen }) {
     }
   }, [isModalOpen]);
 
-  const eventStyleGetter = (event) => {
-    const isCompleted = event.resource?.completed;
-    return {
-      className: cn(
-        "rbc-event border rounded-md px-2 py-1",
-        isCompleted
-          ? "bg-green-100 border-green-200 text-green-800"
-          : "bg-red-100 border-red-200 text-red-800"
-      ),
-    };
+const eventStyleGetter = (event) => {
+  const isCompleted = event.end < new Date();
+  const customColor = event.colorData?.color;
+
+  return {
+    className: cn(
+      "rbc-event border rounded-md px-2 py-1 overflow-hidden text-ellipsis whitespace-nowrap",
+      !customColor && !isCompleted && "bg-red-100 border-red-200 text-red-800",
+      isCompleted && "bg-green-100 border-green-200 text-green-800"
+    ),
+    style: customColor
+      ? {
+          backgroundColor: customColor,
+          borderColor: customColor,
+          color: "#fff",
+        }
+      : {},
   };
+};
+
 
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);

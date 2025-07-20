@@ -11,7 +11,7 @@ import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import { ColorPicker } from "./color-picker";
-
+import { toast } from "sonner";
 export function EventTaskModal({ isOpen, onClose, event }) {
   const [activeTab, setActiveTab] = useState("event");
   const [startTimeString, setStartTimeString] = useState(() => {
@@ -107,11 +107,13 @@ export function EventTaskModal({ isOpen, onClose, event }) {
           "events",
           JSON.stringify([...filterEvents, eventData])
         );
+        toast.success("Event updated successfully");
       } else {
         localStorage.setItem(
           "events",
           JSON.stringify([...prevEvents, eventData])
         );
+        toast.success("Event created successfully");
       }
     }
 

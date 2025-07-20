@@ -2,16 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay } from "date-fns";
+import { format, parse, startOfWeek, getDay, addDays, subDays } from "date-fns";
 import { enUS } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
+import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+const DnDCalendar = withDragAndDrop(Calendar);
 import "./styles.css";
-
 import { Card } from "../ui/card";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import PageTitle from "../page-title";
 import { cn } from "@/lib/utils";
-
 import { CalendarHeader } from "./calendar-header";
 import { CalendarToolbar } from "./calendar-toolbar";
 import { EventTaskModal } from "../EventTaskModal";
@@ -29,7 +30,8 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [view, setView] = useState(Views.MONTH);
   const [date, setDate] = useState(new Date());
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([
+  ]);
 
   useEffect(() => {
     const stored = localStorage.getItem("events");
@@ -43,74 +45,75 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen }) {
     }
   }, [isModalOpen]);
 
-const eventStyleGetter = (event) => {
-  const isCompleted = event.end < new Date();
-  const customColor = event.colorData?.color;
+  useEffect(() => {
+    localStorage.setItem("events", JSON.stringify(events));
+  }, [events]);
 
-  return {
-    className: cn(
-      "rbc-event border rounded-md px-2 py-1 overflow-hidden text-ellipsis whitespace-nowrap",
-      !customColor && !isCompleted && "bg-red-100 border-red-200 text-red-800",
-      isCompleted && "bg-green-100 border-green-200 text-green-800"
-    ),
-    style: customColor
-      ? {
-          backgroundColor: customColor,
-          borderColor: customColor,
-          color: "#fff",
-        }
-      : {},
+  const eventStyleGetter = (event) => {
+    const isCompleted = event.end < new Date();
+    const customColor = event.colorData?.color;
+
+    return {
+      className: cn(
+        "rbc-event border rounded-md px-2 py-1 overflow-hidden text-ellipsis whitespace-nowrap",
+        !customColor &&
+          !isCompleted &&
+          "bg-red-100 border-red-200 text-red-800",
+        isCompleted && "bg-green-100 border-green-200 text-green-800"
+      ),
+      style: customColor
+        ? {
+            backgroundColor: customColor,
+            borderColor: customColor,
+            color: "#fff",
+          }
+        : {},
+    };
   };
-};
-
 
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
   };
 
+  const onEventResize = ({ start, end, event }) => {
+    setEvents((prev) =>
+      prev.map((evt) => (evt.id === event.id ? { ...evt, time: { start, end } } : evt))
+    );
+  };
+
+  const onEventDrop = ({ start, end, event }) => {
+    setEvents((prev) =>
+      prev.map((evt) => (evt.id === event.id ? { ...evt, start, end } : evt))
+    );
+  };
+
+
   return (
     <div>
       <Card className="text-sm">
         <ScrollArea>
           <div className="h-[calc(100svh-150px)]">
-            <Calendar
+            <DnDCalendar
               localizer={localizer}
               events={events}
               startAccessor="start"
               endAccessor="end"
               view={view}
               onView={setView}
-              // date={date}
-              // onDoubleClickEvent={(event) => {
-              //   setSelectedDate(event.start)
-              //   setIsModalOpen(true)
-              // }}
-              onSelecting={({ start, end }) => {
-                setSelectedDate(start);
-                setIsModalOpen(true);
-                return false; // Prevent default selection behavior
-              }}
-              onKeyPressEvent={(event) => {
-                setSelectedDate(event.start);
-                setIsModalOpen(true);
-              }}
               onNavigate={setDate}
               onSelectEvent={handleSelectEvent}
-              // onSelectSlot={(slotInfo) => {
-              //   setSelectedDate(slotInfo.start)
-              //   setIsModalOpen(true)
-              // }}
               selectable
               views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
               eventPropGetter={eventStyleGetter}
-              components={{
-                toolbar: CalendarToolbar,
-                header: CalendarHeader,
-              }}
+              components={{ toolbar: CalendarToolbar, header: CalendarHeader }}
               popup
-              className="calendar bg-background text-foreground text-sm "
-              style={{ height: "100%"}}
+              className="calendar bg-background text-foreground text-sm"
+              style={{ height: "100%" }}
+              resizable
+              onEventDrop={onEventDrop}
+              onEventResize={onEventResize}
+              draggableAccessor={() => true}
             />
           </div>
           <ScrollBar orientation="horizontal" />

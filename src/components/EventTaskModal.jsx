@@ -64,7 +64,7 @@ export function EventTaskModal({ isOpen, onClose, event }) {
         location: event.location || "",
         time: event.start || null,
         type: event.type || "event",
-        colorData: event.color || {name: "color picker", color: "#3174AD"},
+        colorData: event.colorData || {name: "color picker", color: "#3174AD"},
 
       });
     }

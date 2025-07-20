@@ -45,9 +45,9 @@ export function AppSidebar({ ...props }) {
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="border-sidebar-border h-16 border-b">
+      {/* <SidebarHeader className="border-sidebar-border h-16 border-b"> */}
         {/* <NavUser user={data.user} /> */}
-      </SidebarHeader>
+      {/* </SidebarHeader> */}
       <SidebarContent className="flex flex-col items-center">
         <Calendar02
           mode="single"

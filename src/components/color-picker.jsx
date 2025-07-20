@@ -20,7 +20,7 @@ export function ColorPicker({ value, onChange }) {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[250px] p-2 rounded-xl shadow-lg border bg-white">
+      <PopoverContent className="w-[350px] p-2 rounded-xl shadow-lg border bg-white">
         <ScrollArea className="h-60 w-full pr-4">
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
             {colorOptions.map((colorData) => (

@@ -12,8 +12,17 @@ import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
 export function EventTaskModal({ isOpen, onClose, event }) {
-
   const [activeTab, setActiveTab] = useState("event");
+  const [startTimeString, setStartTimeString] = useState(() => {
+    const now = new Date();
+    return now.toTimeString().slice(0, 5);
+  });
+  const [endTimeString, setEndTimeString] = useState(() => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    return (now.toTimeString() + "01:00:00").slice(0, 5);
+  });
+
   const [formData, setFormData] = useState({
     id: "",
     title: "",
@@ -61,8 +70,20 @@ export function EventTaskModal({ isOpen, onClose, event }) {
 
     if (!formData.title || !formData.time) return;
 
+    const [startHours, startMinutes, startSeconds] = startTimeString
+      .split(":")
+      .map(Number);
     const startDate = new Date(formData.time);
-    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hour later
+    startDate.setHours(startHours);
+    startDate.setMinutes(startMinutes);
+    startDate.setSeconds(startSeconds || 0);
+    const [endHours, endMinutes, endSeconds] = endTimeString
+      .split(":")
+      .map(Number);
+    const endDate = new Date(startDate.getTime());
+    endDate.setHours(endHours);
+    endDate.setMinutes(endMinutes);
+    endDate.setSeconds(endSeconds || 0);
 
     const eventData = {
       ...formData,
@@ -98,12 +119,9 @@ export function EventTaskModal({ isOpen, onClose, event }) {
       const existing = localStorage.getItem("events");
       const prevEvents = existing ? JSON.parse(existing) : [];
       const filterEvents = prevEvents.filter((p) => p.id !== event.id);
-      localStorage.setItem(
-        "events",
-        JSON.stringify(filterEvents)
-      );
+      localStorage.setItem("events", JSON.stringify(filterEvents));
     }
-    handleClose()
+    handleClose();
   };
 
   return (
@@ -134,15 +152,17 @@ export function EventTaskModal({ isOpen, onClose, event }) {
           placeholder="Add title"
           className="mb-2"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, title: e.target.value });
+          }}
         />
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <Popover>
+        <div className="flexitems-center gap-2 text-sm text-muted-foreground mb-2">
+          <Popover className="">
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-start text-left font-normal"
+                className=" w-full justify-start text-left font-normal"
               >
                 {formData.time
                   ? format(formData.time, "MMMM dd, yyyy")
@@ -158,7 +178,7 @@ export function EventTaskModal({ isOpen, onClose, event }) {
                   if (selected)
                     setFormData({
                       ...formData,
-                      time: selected, // ✅ store as Date object, not formatted string
+                      time: selected,
                     });
                 }}
                 disabled={(d) => d < new Date("1900-01-01")}
@@ -166,6 +186,31 @@ export function EventTaskModal({ isOpen, onClose, event }) {
               />
             </PopoverContent>
           </Popover>
+        </div>
+        <div className="flex w-full justify-between">
+          <Input
+            type="start time"
+            id="time-picker"
+            step="1"
+            value={startTimeString}
+            onChange={(e) => {
+              setStartTimeString(e.target.value);
+              const [h, m] = e.target.value.split(":").map(Number);
+              const end = new Date();
+              end.setHours(h + 1, m);
+              setEndTimeString(end.toTimeString().slice(0, 5));
+            }}
+            className="bg-background w-[45%] appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+          />
+
+          <Input
+            type="end time"
+            id="time-picker"
+            step="1"
+            value={endTimeString}
+            onChange={(e) => setEndTimeString(e.target.value)}
+            className="bg-background w-[45%] appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+          />
         </div>
 
         {activeTab === "event" && (
@@ -231,18 +276,17 @@ export function EventTaskModal({ isOpen, onClose, event }) {
         )}
         <div>
           {event?.id && (
-            <Button 
-            onClick={handleDelete} 
-             variant={event?.id ? "outline" : "default"}
-            className={`w-full mt-4 ${event?.id  && "border hover:bg-gray-300 border-black bg-gray-200"}`}
+            <Button
+              onClick={handleDelete}
+              variant={event?.id ? "outline" : "default"}
+              className={`w-full mt-4 ${
+                event?.id && "border hover:bg-gray-300 border-black bg-gray-200"
+              }`}
             >
               Delete
             </Button>
           )}
-          <Button
-            onClick={handleSave}
-            className="w-full mt-4"
-          >
+          <Button onClick={handleSave} className="w-full mt-4">
             {event?.id ? "Save changes" : "Save"}
           </Button>
         </div>

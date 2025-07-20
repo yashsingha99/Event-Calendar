@@ -1,0 +1,92 @@
+.calendar {
+    height: 100%;
+}
+
+.rbc-calendar {
+    font-family: var(--font-sans, 'Inter', sans-serif);
+}
+
+/* Toolbar Styling */
+.rbc-toolbar {
+    margin-bottom: 1rem;
+}
+
+.rbc-toolbar button {
+    border-radius: 0.375rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--color-foreground);
+}
+
+.rbc-toolbar button:hover {
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+}
+
+.rbc-toolbar button.rbc-active {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+}
+
+/* Header Cells */
+.rbc-header {
+    background-color: color-mix(in srgb, var(--color-muted) 50%, transparent);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+}
+
+/* Today Cell */
+.rbc-today {
+    background-color: black;
+    color: var(--color-accent-foreground);
+}
+
+/* Off Range */
+.rbc-off-range-bg {
+    background-color: color-mix(in srgb, var(--color-muted) 25%, transparent);
+}
+
+/* Events */
+.rbc-event {
+    cursor: pointer;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* More Events */
+.rbc-show-more {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.rbc-show-more:hover {
+    text-decoration: underline;
+}
+
+/* Borders for All Views */
+.rbc-month-view,
+.rbc-time-view,
+.rbc-agenda-view {
+    border: 1px solid var(--color-border);
+}
+
+.rbc-time-header-content,
+.rbc-header,
+.rbc-time-content {
+    border-color: var(--color-border);
+}
+
+/* Time Slot Lines */
+.rbc-day-slot .rbc-time-slot {
+    border-color: color-mix(in srgb, var(--color-border) 50%, transparent);
+}

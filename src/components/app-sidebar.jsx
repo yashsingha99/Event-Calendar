@@ -1,4 +1,5 @@
-import * as React from "react";
+"use client";
+import React, {useState} from "react";
 import { Plus } from "lucide-react";
 
 import { Calendars } from "@/components/calendars";
@@ -40,7 +41,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
-  const [time, setTime] = React.useState(new Date());
+  const [time, setTime] = useState(new Date());
 
   return (
     <Sidebar {...props}>

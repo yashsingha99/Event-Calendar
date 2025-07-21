@@ -32,5 +32,5 @@ A modern, responsive calendar web app built with **React**, **React Big Calendar
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/yashsingha99/Event-Calendar.git
 cd your-repo-name

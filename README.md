@@ -4,6 +4,11 @@ A modern, responsive calendar web app built with **React**, **React Big Calendar
 
 ---
 
+![Dark Theme Calendar](public/img1.jpeg)
+![Dark Theme Calendar](public/img2.jpeg)
+![Event, Task & Event Color Manager](public/img3.jpeg)
+![Schedular Event Drag & Drop](public/img4.jpeg)
+
 ## ✨ Features
 
 - ✅ Fully responsive & mobile-friendly layout

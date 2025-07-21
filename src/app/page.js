@@ -16,42 +16,50 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
-import { Toaster } from "sonner";
+import { toast, Toaster } from "sonner";
 
 export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSelect, setIsSelect] = useState(false);
-  useEffect(() => {
-    const calendars = JSON.parse(localStorage.getItem("calendars"))
-    if(!calendars){
-       const dummyData = [{
-        name: "My Calendar",
-        items:[ {
-          id: "1",
-          name: "Personal",
-          active: true
-        }, 
-        {
-          id: '2',
-          name: "Work",
-          active: false,
-        },
-        {
-          id : '3',
-          name: "Friends",
-          active: false
-        }
-      ]
-       }]
+  const [time, setTime] = useState("");
 
-       localStorage.setItem("calendars", JSON.stringify(dummyData))
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const calendars = JSON.parse(localStorage.getItem("calendars"));
+      if (!calendars) {
+        const dummyData = [
+          {
+            name: "My Calendar",
+            items: [
+              {
+                id: "1",
+                name: "Personal",
+                active: true,
+              },
+              {
+                id: "2",
+                name: "Work",
+                active: false,
+              },
+              {
+                id: "3",
+                name: "Friends",
+                active: false,
+              },
+            ],
+          },
+        ];
+        localStorage.setItem("calendars", JSON.stringify(dummyData));
+      }
+    } else {
+      toast.error("localstorage not found")
     }
-  }, [])
+  }, []);
   return (
     <>
       <Toaster />
       <SidebarProvider>
-        <AppSidebar setIsSelect={setIsSelect} />
+        <AppSidebar setIsSelect={setIsSelect} time={time} setTime={setTime} />
         <SidebarInset>
           <header className="bg-background justify-between sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <div className="flex items-center gap-2">
@@ -78,6 +86,8 @@ export default function Page() {
             </Button>
           </header>
           <CalendarPage
+            time={time}
+            setTime={setTime}
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
             isSelect={isSelect}

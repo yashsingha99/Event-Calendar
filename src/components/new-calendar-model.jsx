@@ -41,13 +41,11 @@ export function NewCalendarModal({ isOpen, onClose, onOpen }) {
             toast.error("At least one item is required.");
             return;
         }
-        if (typeof window !== "undefined") {
             const existing = localStorage.getItem("calendars");
             const prevCalendars = existing ? JSON.parse(existing) : [];
             const newCalendar = {...formData, id: formData.id || uuidv4() };
             const updatedCalendars = [...prevCalendars, newCalendar];
             localStorage.setItem("calendars", JSON.stringify(updatedCalendars));
-        }
         handleClose();
     };
 

@@ -5,12 +5,7 @@ import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -45,10 +40,8 @@ export function EventTaskModal({ isOpen, onClose, event }) {
   });
 
   useEffect(() => {
-    // if (typeof window !== "undefined") {
       const localCalendars = localStorage.getItem("calendars");
       setData(localCalendars ? JSON.parse(localCalendars) : []);
-    // }
   }, [isOpen]);
 
   useEffect(() => {
@@ -60,7 +53,10 @@ export function EventTaskModal({ isOpen, onClose, event }) {
         guests: event.guests || "",
         time: event.start || null,
         type: event.type || "event",
-        colorData: event.colorData || { name: "color picker", color: "#3174AD" },
+        colorData: event.colorData || {
+          name: "color picker",
+          color: "#3174AD",
+        },
         calendarId: event.calendar?.id || "",
         calendarName: event.calendar?.name || "Select Calendar",
       });
@@ -104,58 +100,62 @@ export function EventTaskModal({ isOpen, onClose, event }) {
       return;
     }
 
-    const [startH, startM] = startTime.split(":").map(Number);
-    const [endH, endM] = endTime.split(":").map(Number);
+      const [startH, startM] = startTime.split(":").map(Number);
+      const [endH, endM] = endTime.split(":").map(Number);
 
-    const startDate = new Date(formData.time);
-    startDate.setHours(startH, startM, 0);
+      const startDate = new Date(formData.time);
+      startDate.setHours(startH, startM, 0);
 
-    const endDate = new Date(formData.time);
-    endDate.setHours(endH, endM, 0);
+      const endDate = new Date(formData.time);
+      endDate.setHours(endH, endM, 0);
 
-    const newEvent = {
-      ...formData,
-      id: event?.id || uuidv4(),
-      start: startDate,
-      end: endDate,
-      allDay: false,
-      calendar: {
-        id: formData.calendarId,
-        name: formData.calendarName,
-      },
-    };
+      const newEvent = {
+        ...formData,
+        id: event?.id || uuidv4(),
+        start: startDate,
+        end: endDate,
+        allDay: false,
+        calendar: {
+          id: formData.calendarId,
+          name: formData.calendarName,
+        },
+      };
 
-    const storedEvents = localStorage.getItem("events");
-    const existingEvents = storedEvents ? JSON.parse(storedEvents) : [];
+      const storedEvents = localStorage.getItem("events");
+      const existingEvents = storedEvents ? JSON.parse(storedEvents) : [];
 
-    if (event?.id) {
-      const updated = existingEvents.filter((e) => e.id !== event.id);
-      localStorage.setItem("events", JSON.stringify([...updated, newEvent]));
-      toast.success("Event updated.");
-    } else {
-      localStorage.setItem("events", JSON.stringify([...existingEvents, newEvent]));
-      toast.success("Event added.");
-    }
-
-    handleClose();
+      if (event?.id) {
+        const updated = existingEvents.filter((e) => e.id !== event.id);
+        localStorage.setItem("events", JSON.stringify([...updated, newEvent]));
+        toast.success("Event updated.");
+      } else {
+        localStorage.setItem(
+          "events",
+          JSON.stringify([...existingEvents, newEvent])
+        );
+        toast.success("Event added.");
+      }
+      handleClose();
   };
 
   const handleDelete = () => {
-    const storedEvents = localStorage.getItem("events");
-    const existingEvents = storedEvents ? JSON.parse(storedEvents) : [];
+      const storedEvents = localStorage.getItem("events");
+      const existingEvents = storedEvents ? JSON.parse(storedEvents) : [];
 
-    const updated = existingEvents.filter((e) => e.id !== event.id);
-    localStorage.setItem("events", JSON.stringify(updated));
+      const updated = existingEvents.filter((e) => e.id !== event.id);
+      localStorage.setItem("events", JSON.stringify(updated));
 
-    toast.success("Event deleted.");
-    handleClose();
+      toast.success("Event deleted.");
+      handleClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{event ? "Edit" : "Add"} {activeTab === "event" ? "Event" : "Task"}</DialogTitle>
+          <DialogTitle>
+            {event ? "Edit" : "Add"} {activeTab === "event" ? "Event" : "Task"}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex justify-between items-center mb-2">
@@ -236,7 +236,9 @@ export function EventTaskModal({ isOpen, onClose, event }) {
         <Select
           value={formData.calendarId}
           onValueChange={(id) => {
-            const found = data?.flatMap((c) => c.items).find((i) => i.id === id);
+            const found = data
+              ?.flatMap((c) => c.items)
+              .find((i) => i.id === id);
             setFormData((prev) => ({
               ...prev,
               calendarId: id,
@@ -273,7 +275,10 @@ export function EventTaskModal({ isOpen, onClose, event }) {
               className="mt-2"
               value={formData.description}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, description: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
               }
             />
           </>
@@ -286,7 +291,10 @@ export function EventTaskModal({ isOpen, onClose, event }) {
               className="mt-2"
               value={formData.description}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, description: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
               }
             />
             <select

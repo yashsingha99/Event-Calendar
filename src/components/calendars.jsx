@@ -17,8 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 
 export function Calendars({ calendars, setCalendars, setIsSelect }) {
-  const [checkedItems, setCheckedItems] = React.useState({});
-  // console.log(calendars);
   
   const toggleItem = (calendarName, item) => {
     setCalendars((prev) => {

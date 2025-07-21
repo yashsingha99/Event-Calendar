@@ -8,8 +8,9 @@ import {
 } from "../ui/select"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Views } from "react-big-calendar"
-
+export let PropsData = null
 export function CalendarToolbar(props) {
+  PropsData = props
   return (
     <div className="mb-4 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -32,7 +33,7 @@ export function CalendarToolbar(props) {
         </Button>
       </div>
 
-      <h2 className="text-lg font-semibold">{props.label}</h2>
+      <h2 className="text-sm font-semibold">{props.label}</h2>
 
       <Select
         value={props.view}

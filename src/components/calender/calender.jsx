@@ -25,15 +25,27 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
-
-export default function CalendarPage({ isModalOpen, setIsModalOpen, isSelect }) {
+import {PropsData} from "./calendar-toolbar";
+export default function CalendarPage({
+  isModalOpen,
+  setIsModalOpen,
+  isSelect,
+  time,
+  setTime,
+}) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [view, setView] = useState(Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState([]);
   const [calendars, setCalendars] = useState([]);
   
+  useEffect(() => {
+    if(time){
+      PropsData.onView("day");
+      setDate(new Date(time));
+    }
+  }, [time])
+
   useEffect(() => {
     const storedEvents = localStorage.getItem("events");
     const storedCalendars = JSON.parse(localStorage.getItem("calendars"));
@@ -46,9 +58,8 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen, isSelect }) 
         }
       });
     });
-    if (storedEvents && activeItems) {
+    if (storedEvents && activeItems ) {
       const parsed = JSON.parse(storedEvents).map((event) => {
-        
         const isActive = activeItems.some(
           (item) => item.id == event.calendarId
         );
@@ -60,22 +71,13 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen, isSelect }) 
           };
         }
       });
-      if(parsed == [null]){
+      if (parsed == [null]) {
         setEvents([]);
       } else {
-        setEvents(parsed)
+        setEvents(parsed);
       }
     }
   }, [isModalOpen, isSelect]);
-
-  // useEffect(() => {
-  //   if(events == [null]){
-  //    localStorage.setItem("events", JSON.stringify([]));
-  //   } else {
-  //      localStorage.setItem("events", JSON.stringify(events));
-  //      setFilteredEvents(events)
-  //   }
-  // }, [events]);
 
   const eventStyleGetter = (event) => {
     const isCompleted = event.end < new Date();
@@ -117,7 +119,7 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen, isSelect }) 
     setEvents((prev) =>
       prev.map((evt) => (evt.id === event.id ? { ...evt, start, end } : evt))
     );
-    localStorage.setItem("events", JSON.stringify(events));
+      localStorage.setItem("events", JSON.stringify(events));
   };
 
   return (
@@ -132,19 +134,20 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen, isSelect }) 
               endAccessor="end"
               view={view}
               onView={setView}
-              onNavigate={setDate}
+              date={date}
               onSelectEvent={handleSelectEvent}
+              // onDoubleClickEvent={handleSelectEvent}
               selectable
               views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
               eventPropGetter={eventStyleGetter}
               components={{ toolbar: CalendarToolbar, header: CalendarHeader }}
-              popup
               className="calendar bg-background text-foreground text-sm"
               style={{ height: "100%" }}
               resizable
               onEventDrop={onEventDrop}
               onEventResize={onEventResize}
               draggableAccessor={() => true}
+              resizableAccessor={() => true}
             />
           </div>
           <ScrollBar orientation="horizontal" />

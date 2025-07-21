@@ -1,4 +1,3 @@
-// utils/colorOptions.ts
 export const colorOptions = [
   { name: "Red 300", color: "#f87171" },
   { name: "Red 500", color: "#ef4444" },

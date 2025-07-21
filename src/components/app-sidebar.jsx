@@ -27,7 +27,7 @@ export function AppSidebar({ setIsSelect }) {
       const calendars = localStorage.getItem("calendars");
       setData(JSON.parse(calendars)||[{}]);
     }
-  }, []);
+  }, [isOpen]);
      
   return (
     <Sidebar>

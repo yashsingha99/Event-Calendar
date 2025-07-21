@@ -45,11 +45,11 @@ export function EventTaskModal({ isOpen, onClose, event }) {
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    // if (typeof window !== "undefined") {
       const localCalendars = localStorage.getItem("calendars");
       setData(localCalendars ? JSON.parse(localCalendars) : []);
-    }
-  }, []);
+    // }
+  }, [isOpen]);
 
   useEffect(() => {
     if (event) {

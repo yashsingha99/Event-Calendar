@@ -158,6 +158,7 @@ export default function CalendarPage({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         event={selectedEvent}
+        setSelectedEvent={setSelectedEvent}
       />
     </div>
   );

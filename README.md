@@ -1,4 +1,4 @@
-# 📅 React Big Calendar App
+# 📅 Event Calendar App
 
 A modern, responsive calendar web app built with **React**, **React Big Calendar**, **Tailwind CSS**, and **Shadcn UI**. It supports scheduling tasks and events with customizable colors, modals, and user-friendly UI interactions — similar to **Google Calendar**.
 
@@ -33,4 +33,4 @@ A modern, responsive calendar web app built with **React**, **React Big Calendar
 
 ```bash
 git clone https://github.com/yashsingha99/Event-Calendar.git
-cd your-repo-name
+cd Event-Calendar

@@ -21,7 +21,7 @@ import {
   SelectItem,
 } from "./ui/select";
 
-export function EventTaskModal({ isOpen, onClose, event }) {
+export function EventTaskModal({ isOpen, onClose, event,setSelectedEvent }) {
   const [activeTab, setActiveTab] = useState("event");
   const [data, setData] = useState([]);
   const [startTime, setStartTime] = useState("09:00");
@@ -81,6 +81,7 @@ export function EventTaskModal({ isOpen, onClose, event }) {
       calendarName: "Select Calendar",
       colorData: { name: "color picker", color: "#3174AD" },
     });
+    setSelectedEvent(null)
     setStartTime("09:00");
     setEndTime("10:00");
   };

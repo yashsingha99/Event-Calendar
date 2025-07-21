@@ -15,16 +15,43 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 
 export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSelect, setIsSelect] = useState(false);
+  useEffect(() => {
+    const calendars = JSON.parse(localStorage.getItem("calendars"))
+    if(!calendars){
+       const dummyData = [{
+        name: "My Calendar",
+        items:[ {
+          id: "1",
+          name: "Personal",
+          active: true
+        }, 
+        {
+          id: '2',
+          name: "Work",
+          active: false,
+        },
+        {
+          id : '3',
+          name: "Friends",
+          active: false
+        }
+      ]
+       }]
+
+       localStorage.setItem("calendars", JSON.stringify(dummyData))
+    }
+  }, [])
   return (
     <>
       <Toaster />
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar setIsSelect={setIsSelect} />
         <SidebarInset>
           <header className="bg-background justify-between sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <div className="flex items-center gap-2">
@@ -50,16 +77,10 @@ export default function Page() {
               New Event
             </Button>
           </header>
-          {/* <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-5">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div key={i} className="bg-muted/50 aspect-square rounded-xl" />
-            ))}
-          </div>
-        </div> */}
           <CalendarPage
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
+            isSelect={isSelect}
           />
         </SidebarInset>
       </SidebarProvider>

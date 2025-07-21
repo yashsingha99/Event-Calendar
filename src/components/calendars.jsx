@@ -16,30 +16,33 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 
-export function Calendars({ calendars }) {
+export function Calendars({ calendars, setCalendars, setIsSelect }) {
   const [checkedItems, setCheckedItems] = React.useState({});
-
+  // console.log(calendars);
+  
   const toggleItem = (calendarName, item) => {
-    setCheckedItems((prev) => {
-      const currentSet = new Set(prev[calendarName] || []);
-      if (currentSet.has(item)) {
-        currentSet.delete(item);
-      } else {
-        currentSet.add(item);
-      }
-      return {
-        ...prev,
-        [calendarName]: currentSet,
-      };
+    setCalendars((prev) => {
+      const updatedCalendars = prev.map((calendar) => {
+        if (calendar.name === calendarName) {
+          return {
+            ...calendar,
+            items: calendar.items.map((i) =>
+              i.id === item.id ? { ...i, active: !i.active } : i
+            ),
+          };
+        }
+        return calendar;
+      });
+      localStorage.setItem("calendars", JSON.stringify(updatedCalendars));
+      return updatedCalendars;
     });
+    setIsSelect((p) => !p)
   };
 
-  const isChecked = (calendarName, item) =>
-    checkedItems[calendarName]?.has(item);
 
   return (
     <>
-      {calendars.map((calendar, index) => (
+      {calendars?.map((calendar, index) => (
         <React.Fragment key={calendar.name}>
           <SidebarGroup className="py-0">
             <Collapsible
@@ -59,10 +62,10 @@ export function Calendars({ calendars }) {
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {calendar.items.map((item) => {
-                      const active = isChecked(calendar.name, item);
+                    {calendar?.items?.map((item) => {
+                      const active = item.active;
                       return (
-                        <SidebarMenuItem key={item}>
+                        <SidebarMenuItem key={item.id}>
                           <SidebarMenuButton
                             onClick={() => toggleItem(calendar.name, item)}
                             className="flex gap-2 items-center"
@@ -81,7 +84,7 @@ export function Calendars({ calendars }) {
                                 } text-white`}
                               />
                             </div>
-                            {item}
+                            {item.name}
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       );

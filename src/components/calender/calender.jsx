@@ -26,28 +26,56 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-export default function CalendarPage({ isModalOpen, setIsModalOpen }) {
+export default function CalendarPage({ isModalOpen, setIsModalOpen, isSelect }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [view, setView] = useState(Views.MONTH);
   const [date, setDate] = useState(new Date());
-  const [events, setEvents] = useState([
-  ]);
-
+  const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [calendars, setCalendars] = useState([]);
+  
   useEffect(() => {
-    const stored = localStorage.getItem("events");
-    if (stored) {
-      const parsed = JSON.parse(stored).map((event) => ({
-        ...event,
-        start: new Date(event.start),
-        end: new Date(event.end),
-      }));
-      setEvents(parsed);
+    const storedEvents = localStorage.getItem("events");
+    const storedCalendars = JSON.parse(localStorage.getItem("calendars"));
+    setCalendars(storedCalendars || []);
+    const activeItems = [];
+    storedCalendars?.filter((calendar) => {
+      calendar.items.some((item) => {
+        if (item.active) {
+          activeItems.push(item);
+        }
+      });
+    });
+    if (storedEvents && activeItems) {
+      const parsed = JSON.parse(storedEvents).map((event) => {
+        
+        const isActive = activeItems.some(
+          (item) => item.id == event.calendarId
+        );
+        if (isActive) {
+          return {
+            ...event,
+            start: new Date(event.start),
+            end: new Date(event.end),
+          };
+        }
+      });
+      if(parsed == [null]){
+        setEvents([]);
+      } else {
+        setEvents(parsed)
+      }
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, isSelect]);
 
-  useEffect(() => {
-    localStorage.setItem("events", JSON.stringify(events));
-  }, [events]);
+  // useEffect(() => {
+  //   if(events == [null]){
+  //    localStorage.setItem("events", JSON.stringify([]));
+  //   } else {
+  //      localStorage.setItem("events", JSON.stringify(events));
+  //      setFilteredEvents(events)
+  //   }
+  // }, [events]);
 
   const eventStyleGetter = (event) => {
     const isCompleted = event.end < new Date();
@@ -78,16 +106,19 @@ export default function CalendarPage({ isModalOpen, setIsModalOpen }) {
 
   const onEventResize = ({ start, end, event }) => {
     setEvents((prev) =>
-      prev.map((evt) => (evt.id === event.id ? { ...evt, time: { start, end } } : evt))
+      prev.map((evt) =>
+        evt.id === event.id ? { ...evt, time: { start, end } } : evt
+      )
     );
+    localStorage.setItem("events", JSON.stringify(events));
   };
 
   const onEventDrop = ({ start, end, event }) => {
     setEvents((prev) =>
       prev.map((evt) => (evt.id === event.id ? { ...evt, start, end } : evt))
     );
+    localStorage.setItem("events", JSON.stringify(events));
   };
-
 
   return (
     <div>
